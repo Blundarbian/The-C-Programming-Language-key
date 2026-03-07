@@ -55,6 +55,7 @@ int getint(int *pn) {
 	if (c != EOF)
 		ungetch(c);
 
+	// char returned after the last digit is unget
 	return c;
 }
 
