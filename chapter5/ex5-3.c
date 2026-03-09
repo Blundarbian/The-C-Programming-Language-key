@@ -2,10 +2,7 @@
    strcat that we showed in Chapter 2: strcat ( s, t) 
    copies the string t to the end of s.
 */
-
 #include <stdio.h>
-#include <stdlib.h>
-
 
 void stringcat(char *s, char *t) {
 	// end of s
@@ -30,4 +27,3 @@ int main(void) {
 	
 	return 0;
 }
-
