@@ -2,11 +2,11 @@
    of getint. What type does getfloat return as its function 
    value? 
 */
-
 #include <stdio.h>
 #include <ctype.h>
 
 #define BUFF 100
+
 
 int getfloat(double *pn);
 int getch(void);
