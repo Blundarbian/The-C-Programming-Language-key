@@ -19,53 +19,6 @@ int getop(char *s);
 int getch(void);
 void ungetch(int c);
 
-
-int main(void) {
-	
-	// atoi
-	char aword[WORD] = "100";
-	char bword[WORD] = "32201";
-	char cword[5] = "0123";
-	int aval = atoi(aword);	
-	int bval = atoi(bword);
-	int cval = atoi(cword);
-	printf("atio: %d, %d, %d\n", aval, bval, cval);
-
-	// itoa
-	char dword[WORD];
-	itoa(1, dword);
-	char eword[WORD];
-	itoa(100, eword);
-	char fword[WORD];
-	itoa(2129, fword);
-	printf("itoa: %s, %s, %s\n", dword, eword, fword);
-
-	// reverse	
-	reverse(aword);
-	reverse(bword);
-	reverse(cword);
-	printf("reverse: %s, %s, %s\n", aword, bword, cword);
-
-	// strindex
-	char gword[WORD] = "pizzaslices";
-	char hword[WORD] = "slices";
-	char iword[WORD] = "zzas";
-	int dex1 = strindex(gword, hword);
-	int dex2 = strindex(hword, gword);
-	int dex3 = strindex(gword, iword);
-	printf("strindex: %d, %d, %d\n", dex1, dex2, dex3);	
-
-	// getop	
-	char jword[WORD];
-	int top1 = getop(jword);
-	int top2 = getop(jword);
-	int top3 = getop(jword);
-	printf("getop: %d, %d, %d\n", top1, top2, top3);
-
-
-	return 0;
-}
-
 // atoi: convert s to integer
 int atoi(char *s) {
 	int n = 0;
@@ -164,4 +117,49 @@ void ungetch(int c) {
 		printf("ungetch: too many characters\n");
 	else 
 		buf[bufp++] = c;
+}
+
+int main(void) {
+	
+	// atoi
+	char aword[WORD] = "100";
+	char bword[WORD] = "32201";
+	char cword[5] = "0123";
+	int aval = atoi(aword);	
+	int bval = atoi(bword);
+	int cval = atoi(cword);
+	printf("atio: %d, %d, %d\n", aval, bval, cval);
+
+	// itoa
+	char dword[WORD];
+	itoa(1, dword);
+	char eword[WORD];
+	itoa(100, eword);
+	char fword[WORD];
+	itoa(2129, fword);
+	printf("itoa: %s, %s, %s\n", dword, eword, fword);
+
+	// reverse	
+	reverse(aword);
+	reverse(bword);
+	reverse(cword);
+	printf("reverse: %s, %s, %s\n", aword, bword, cword);
+
+	// strindex
+	char gword[WORD] = "pizzaslices";
+	char hword[WORD] = "slices";
+	char iword[WORD] = "zzas";
+	int dex1 = strindex(gword, hword);
+	int dex2 = strindex(hword, gword);
+	int dex3 = strindex(gword, iword);
+	printf("strindex: %d, %d, %d\n", dex1, dex2, dex3);	
+
+	// getop	
+	char jword[WORD];
+	int top1 = getop(jword);
+	int top2 = getop(jword);
+	int top3 = getop(jword);
+	printf("getop: %d, %d, %d\n", top1, top2, top3);
+
+	return 0;
 }
