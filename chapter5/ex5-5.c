@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-//strcpy()
 char *stringcopy(char *s, char *ct, int n) {
 	char *start = s; // points to beginning of string
 	int count = 0;
@@ -24,7 +23,6 @@ char *stringcopy(char *s, char *ct, int n) {
 	return start;
 }
 
-//strcat()
 char *stringcat(char *s, char *ct, int n) {
 	char *start = s;
 
@@ -40,7 +38,6 @@ char *stringcat(char *s, char *ct, int n) {
 	return start;
 }
 
-//strncmp
 int stringcmp(char *cs, char *cst, int n) {
 	while (n > 0) {
 		if (*cs > *cst) {
