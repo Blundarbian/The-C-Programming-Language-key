@@ -5,8 +5,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
+#include <ctype.h>
 
 #define BUFSIZE 100
 
@@ -15,13 +15,6 @@ double stack[BUFSIZE];
 
 void push(double f);
 double pop(void);
-int options(char *s);
-
-int options(char *s) {
-	if (isdigit(s[0])) return 1;
-
-	return 0;
-}
 
 void push(double f) {
 	if (p != BUFSIZE) {
@@ -46,7 +39,7 @@ int main(int argc, char *argv[]) {
 	double option;
 
 	for (i = 1; i < argc; i++) {
-		if (options(argv[i]))
+		if (isdigit(argv[i][0]))
 			push(atof(argv[i]));
 
 		else if (strlen(argv[i]) == 1) {
