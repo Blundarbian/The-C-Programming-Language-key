@@ -12,15 +12,15 @@
 
 int tabhelper(int col, int i, int s);
 
-int main(int argc, *argv[]) { 
+int main(int argc, char *argv[]) { 
 
 	int i = 1;
 	int s = TAB;
 
 	if (argc > 1 && argv[1][0] == '-')
-		i = atoi(argv[1][1]);
+		i = atoi(&argv[1][1]);
 	if (argc > 2 && argv[2][0] == '+')
-		s = atoi(argv[2][1]);
+		s = atoi(&argv[2][1]);
 
 	int c, col = 0;
 
@@ -41,6 +41,7 @@ int main(int argc, *argv[]) {
 			else
 				col++;
 		}
+	}
 	return 0;
 }
 
