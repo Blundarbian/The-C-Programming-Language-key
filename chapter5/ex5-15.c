@@ -11,7 +11,7 @@
 
 char *lineptr[MAXLINES];
 
-int readlines(char *lineptr[], int nlines);
+int readlines(char *lineptr[], int nlines, int folding);
 void writelines(char *lineptr[], int nlines);
 
 void myqsort(void *v[], int left, int right,
@@ -25,9 +25,8 @@ void reverseptr(int nlines);
 int main(int argc, char *argv[]) {
 
 	int nlines;
-	int numeric = 0;
-	int reverse = 0;
-	int folding = 0;
+	int numeric ,reverse ,folding;
+	numeric = reverse = folding = 0;
 
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-')
@@ -52,7 +51,7 @@ int main(int argc, char *argv[]) {
 			}
 	}
 
-	if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+	if ((nlines = readlines(lineptr, MAXLINES, folding)) >= 0) {
 
 		myqsort((void **) lineptr,
 				0,
