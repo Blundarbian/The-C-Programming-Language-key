@@ -10,16 +10,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define BUFSIZE 1000 	// num of chars
 #define WORDSIZE 100 	// num of words
-#define MAX 100  	// num of chars per word
 #define DEFAULT 10 	// default tail size
 
 char buf[BUFSIZE];
 char *words[WORDSIZE];
 
-void get_line(void);
+void get_lines(void);
 void printline(void);
 
 int main(int argc, char *argv[]) {
@@ -38,6 +38,9 @@ int main(int argc, char *argv[]) {
 
 	get_lines();
 
+	for (int i = 0; i < WORDSIZE; i++)
+		printf("%s\n", words[i]);
+
 	return 0;
 }
 
@@ -45,14 +48,14 @@ void get_lines() {
 	int c, pos, word;
 	pos = word = 0;
 
-	while ((c = getchar()) != EOF) {
+	words[word] = &buf[pos];
+	while ((c = getchar()) != EOF && pos < BUFSIZE - 1) {
 		if (c == '\n') {
-
+			buf[pos++] = '\0';
+			words[word++] = &buf[pos];
 		}
-
 		buf[pos++] = c;
-
 	}
-
+	buf[pos++] = '\0';
 }
 
