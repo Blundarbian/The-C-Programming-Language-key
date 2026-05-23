@@ -1,16 +1,25 @@
-/*
- *
+/* Exercise 5-13. Write the program tail, which prints the last n 
+ * lines of its input. By default, n is set to 10, let us say, 
+ * but it can be changed by an optional argument so that tail -n 
+ * prints the last n lines. The program should behave rationally 
+ * no matter how unreasonable the input or the value of n. 
+ * Write the program so it makes the best use of available storage;
+ * lines should be stored as in the sorting program of 
+ * Section 5.6, not in a two-dimensional array of fixed size.
  */
 
 #include <stdio.h>
 #include <string.h>
 
-#define LINES 1000 // num of lines
-#define SIZE 100 // max size of each line
-#define DEFAULT 10 // default tail size
+#define BUFSIZE 1000 	// num of chars
+#define WORDSIZE 100 	// num of words
+#define MAX 100  	// num of chars per word
+#define DEFAULT 10 	// default tail size
 
-char *lines[LINES];
-void get_line(char *s);
+char buf[BUFSIZE];
+char *words[WORDSIZE];
+
+void get_line(void);
 void printline(void);
 
 int main(int argc, char *argv[]) {
@@ -27,23 +36,23 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	for (i = 0; i < n; i++) {
-		char s[SIZE];
-		get_line(s);
-	}
+	get_lines();
 
 	return 0;
 }
 
-void get_line(char *s) {
-	int c, i = 0;
+void get_lines() {
+	int c, pos, word;
+	pos = word = 0;
 
-	while ((c = getchar()) != EOF && c != '\n' && i < SIZE - 1)
-		s[i++] = c;
+	while ((c = getchar()) != EOF) {
+		if (c == '\n') {
 
-	if (c == '\n')
-		s[i++] = c;
-	s[i] = '\0';
+		}
+
+		buf[pos++] = c;
+
+	}
 
 }
 
