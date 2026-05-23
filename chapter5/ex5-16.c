@@ -124,9 +124,9 @@ void swap(void *v[], int i, int j) {
 }
 
 //char *lineptr[MAXLINES];
-void reverse(int nlines) {
+void reverseptr(int nlines) {
 	int i = 0;
-	int j = nlines;
+	int j = nlines - 1;
 	char *temp;
 
 	while (i < j) {
