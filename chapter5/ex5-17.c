@@ -18,10 +18,38 @@ void writelines(char *lineptr[], int nlines);
 void myqsort(void *v[], int left, int right,
 		int (*comp)(const void *, const void *));
 
+char *getfeild(char *line, int feild);
+int cp_wrap(const void *a, const void *b);
+int sortfeild = 0;
+
 int numcmp(const char *s1, const char *s2);
 
 void swap(void *v[], int i, int j);
 void reverseptr(int nlines);
+
+int cp_wrap (const void *a, const void *b) {
+	
+	char *s1 = getfeild(*(char **)a, sortfeild);
+	char *s2 = getfeild(*(char **)b, sortfeild);
+}
+
+char *getfeild(char *line, int feild) {
+	char *p = line;
+
+	while (feild > 0) {
+		while (*p == ' ' || *p == '\t')
+			p++;
+		while (*p && *p != ' ' && *p != '\t')
+			p++;
+
+		feild--;
+	}
+
+	while (*p == ' ' || *p == '\t')
+		p++;
+
+	return p;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -44,14 +72,18 @@ int main(int argc, char *argv[]) {
 
 					case 'f':
 						folding = 1;
-							break;
+						break;
 
 					case 'd':
 						if (folding == 1)
 							folding = 3;
 						else
 							folding = 2;
-							break;
+						break;
+
+					case 'k':
+						sortfeild = atoi(&argv[i][j+1]);
+						break;
 
 					default:
 						printf("error: unknown argument -%c\n", argv[i][j]);
@@ -64,14 +96,13 @@ int main(int argc, char *argv[]) {
 		myqsort((void **) lineptr,
 				0,
 				nlines - 1,
-				(int (*)(const void *, const void *))
-				(numeric ? numcmp : strcmp));
+				cp_wrap);
 
 
 		if (reverse)
 			reverseptr(nlines);
 
-		//writelines(lineptr, nlines);
+		writelines(lineptr, nlines);
 
 		return 0;
 
