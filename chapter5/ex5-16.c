@@ -25,7 +25,7 @@ void reverseptr(int nlines);
 int main(int argc, char *argv[]) {
 
 	int nlines;
-	int numeric ,reverse ,folding;
+	int numeric ,reverse ,folding; // prob should use an enum
 	numeric = reverse = folding = 0;
 
 	for (int i = 1; i < argc; i++) {
@@ -42,7 +42,14 @@ int main(int argc, char *argv[]) {
 						break;
 
 					case 'f':
-						folding = 1
+						folding = 1;
+							break;
+
+					case 'd':
+						if (folding == 1)
+							folding = 3;
+						else
+							folding = 2;
 							break;
 
 					default:
