@@ -19,44 +19,59 @@
 char buf[BUFSIZE];
 char *words[WORDSIZE];
 
-void get_lines(void);
-void printline(void);
+int get_lines(void);
 
 int main(int argc, char *argv[]) {
-	int i, n = 0;
+	int n = 0;
 	
-	if (argc == 1) {
+	if (argc == 1) { // no -n given
 		n = DEFAULT;
 
 	} else if (argc == 2 && argv[1][0] == '-') {
 		n = atoi(argv[1] + 1);
 
-	} else {
-		printf("error: -n syntax not found");
+	} else {	
+		printf("error: '-n' syntax not found");
 		return 1;
 	}
 
-	get_lines();
 
-	for (int i = 0; i < 10; i++)
+	int wc = get_lines();
+	int start = 0;
+
+	if (n > wc) { // more lines wanted than given
+		n = wc;
+	} else if (n < wc) {
+		start = (wc - n);
+	}
+
+	for (int i = start; i < wc; i++) {
 		printf("%s\n", words[i]);
+	}
 
 	return 0;
 }
 
-void get_lines() {
+// places characters in buffer and places pointer at the start of
+// each new word.
+int get_lines() {
 	int c, pos, word;
 	pos = word = 0;
 
-	words[word] = &buf[pos];
+	words[word++] = &buf[pos]; // set inital word
 	while ((c = getchar()) != EOF && pos < BUFSIZE - 1) {
 		if (c == '\n') {
 			buf[pos++] = '\0';
-			words[word++] = &buf[pos];
-			continue;
+			words[word++] = &buf[pos]; // new word incriments word
+		} else {
+			buf[pos++] = c;
 		}
-		buf[pos++] = c;
 	}
 	buf[pos++] = '\0';
+
+	if (pos > 0 && buf[pos - 1] == '\0') // remove empty words of '\n'
+		word--;
+	
+	return word;	
 }
 
