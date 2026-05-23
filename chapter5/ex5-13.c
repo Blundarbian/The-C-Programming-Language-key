@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
 	get_lines();
 
-	for (int i = 0; i < WORDSIZE; i++)
+	for (int i = 0; i < 10; i++)
 		printf("%s\n", words[i]);
 
 	return 0;
@@ -53,6 +53,7 @@ void get_lines() {
 		if (c == '\n') {
 			buf[pos++] = '\0';
 			words[word++] = &buf[pos];
+			continue;
 		}
 		buf[pos++] = c;
 	}
