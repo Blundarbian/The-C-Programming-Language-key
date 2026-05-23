@@ -27,12 +27,16 @@ int numcmp(const char *s1, const char *s2);
 void swap(void *v[], int i, int j);
 void reverseptr(int nlines);
 
+
+// compares both lines based on feild
 int cp_wrap (const void *a, const void *b) {
 	
 	char *s1 = getfeild(*(char **)a, sortfeild);
 	char *s2 = getfeild(*(char **)b, sortfeild);
 }
 
+
+// pointer to start of feild in given line
 char *getfeild(char *line, int feild) {
 	char *p = line;
 
@@ -51,6 +55,7 @@ char *getfeild(char *line, int feild) {
 	return p;
 }
 
+
 int main(int argc, char *argv[]) {
 
 	int nlines;
@@ -62,26 +67,23 @@ int main(int argc, char *argv[]) {
 			for (int j = 1; argv[i][j] != '\0'; j++) {
 
 				switch (argv[i][j]) {
-					case 'r':
+					case 'r': // reverse output
 						reverse = 1;
 						break;
 
-					case 'n':
+					case 'n': // numeric sort
 						numeric = 1;
 						break;
 
-					case 'f':
+					case 'f': // case folding
 						folding = 1;
 						break;
 
 					case 'd':
-						if (folding == 1)
-							folding = 3;
-						else
-							folding = 2;
+						folding = (folding == 1) ? 3 : 2;
 						break;
 
-					case 'k':
+					case 'k': // feild index
 						sortfeild = atoi(&argv[i][j+1]);
 						break;
 
@@ -91,17 +93,16 @@ int main(int argc, char *argv[]) {
 			}
 	}
 
+	// input lines
 	if ((nlines = readlines(lineptr, MAXLINES, folding)) >= 0) {
 
-		myqsort((void **) lineptr,
-				0,
-				nlines - 1,
-				cp_wrap);
+		// sort based on feilds
+		myqsort((void **) lineptr, 0, nlines - 1, cp_wrap);
 
+		// reverse if needed 
+		if (reverse) reverseptr(nlines);
 
-		if (reverse)
-			reverseptr(nlines);
-
+		// output sorted lines 
 		writelines(lineptr, nlines);
 
 		return 0;
@@ -112,6 +113,8 @@ int main(int argc, char *argv[]) {
 	}
 }
 
+
+// quicksort for arr's of pointers;
 void myqsort(void *v[], int left, int right,
 		int (*comp)(const void *, const void *)) {
 
@@ -135,6 +138,8 @@ void myqsort(void *v[], int left, int right,
 	myqsort(v, last + 1, right, comp);
 }
 
+
+// numeric strcmp
 int numcmp(const char *s1, const char *s2) {
 
 	double v1 = atof(s1);
@@ -148,6 +153,8 @@ int numcmp(const char *s1, const char *s2) {
 		return 0;
 }
 
+
+// swap two ptr in arr
 void swap(void *v[], int i, int j) {
 
 	void *temp = v[i];
@@ -155,7 +162,8 @@ void swap(void *v[], int i, int j) {
 	v[j] = temp;
 }
 
-//char *lineptr[MAXLINES];
+
+// reverse arr order
 void reverseptr(int nlines) {
 	int i = 0;
 	int j = nlines - 1;
