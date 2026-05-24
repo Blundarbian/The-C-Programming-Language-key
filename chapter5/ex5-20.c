@@ -12,6 +12,7 @@ void dirdcl(void)
 
 		if (tokentype != ')')
 			printf("error: no closing ')'\n");
+
 	} else if (tokentype == NAME) {
 		strcpy(name, token);
 	} else {
@@ -19,7 +20,7 @@ void dirdcl(void)
 		return;
 	}
 
-	while ((type = gettoken()) == PARENS || type == BRACKETS || type == '(') {
+	while ((type = gettoken()) == PAREN || type == BRACKET || type == '(') {
 
 		if (type == PARENS) {
 			strcat(out, " func return");
