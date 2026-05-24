@@ -14,9 +14,9 @@ void dcl(void)
 
         while (tokentype != '\n' && tokentype != EOF) // skip '\n'
             tokentype = gettoken();
-
         return;
     }
+
     dirdcl();
     while (ns-- > 0)
         strcat(out, " pointer to"); // apend to out
