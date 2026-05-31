@@ -9,25 +9,26 @@
 #include <string.h>
 
 #define MAXWORD 100
+#define NKEYS (sizeof keytab / sizeof(keytab[0]))
 
 int getword(char *, int);
-int binsearch(char *, struct key *, int);
+int binsearch(char *word, struct keytab[], int n);
 
 struct key {
 	char *word;
 	int count;
 } keytab[] = {
-	"auto", 0,
-	"break", 0,
-	"case", 0,
-	"char", 0,
-	"const", 0,
-	"continue", 0,
-	"default", 0,
-	"unsigned", 0,
-	"void", 0,
-	"volatile", 0,
-	"while", 0
+ {"auto", 0} ,
+ {"break", 0} ,
+ {"case", 0} ,
+ {"char", 0} ,
+ {"const", 0},
+ {"continue", 0},
+ {"default", 0},
+ {"unsigned", 0},
+ {"void", 0},
+ {"volatile", 0},
+ {"while", 0}
 };
 
 int getword(char *word, int lim) {
@@ -58,6 +59,8 @@ int getword(char *word, int lim) {
 /* count C keywords */
 int main() {
 
+	struct key keytab[NKEYS];
+
 	int n;
 	char word[MAXWORD];
 	while (getword(word, MAXWORD) != EOF)
@@ -72,7 +75,7 @@ int main() {
 }
 
 /* find word in tab[0]...tab[n-1] */
-int binsearch(char *word, struct key tab[], int n) {
+int binsearch(char *word, struct keytab[], int n) {
 
 	int cond;
 	int low, high, mid;
@@ -83,7 +86,7 @@ int binsearch(char *word, struct key tab[], int n) {
 	while (low <= high) {
 		mid = (low + high) / 2;
 
-		if ((cond = strcmp(word, tab[mid].word)) < 0)
+		if ((cond = strcmp(word, keytab[mid].word)) < 0)
 			high = mid - 1;
 		else if (cond > 0)
 			low = mid + 1;
