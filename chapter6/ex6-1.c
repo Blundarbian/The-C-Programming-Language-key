@@ -9,10 +9,28 @@
 #include <string.h>
 
 #define MAXWORD 100
+#define BUFF 100
+
+char buf[BUFF];
+int bp = 0;
+
+int getch(void);
+void ungetch(int);
+
+int getch(void) { return (bp > 0) ? buf[--bp] : getchar(); }
+
+void ungetch(int c) {
+	
+	if (bp >= BUFF)
+		printf("error: too many char in buf\n");
+	else 
+		buf[bp++] = c;
+}
+
 #define NKEYS (sizeof keytab / sizeof(keytab[0]))
 
 int getword(char *, int);
-int binsearch(char *word, struct keytab[], int n);
+int binsearch(char *word, struct key, int n);
 
 struct key {
 	char *word;
@@ -65,7 +83,7 @@ int main() {
 	char word[MAXWORD];
 	while (getword(word, MAXWORD) != EOF)
 		if (isalpha(word[0]))
-			if ((n = binsearch(word, keytab, NKEYS)) >= 0)
+			if ((n = binsearch(word, key, NKEYS)) >= 0)
 				keytab[n].count++;
 
 	for (n = 0; n < NKEYS; n++)
