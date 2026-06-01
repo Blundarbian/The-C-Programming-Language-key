@@ -29,9 +29,6 @@ void ungetch(int c) {
 
 #define NKEYS (sizeof keytab / sizeof(keytab[0]))
 
-int getword(char *, int);
-int binsearch(char *word, struct key tab[], int n);
-
 struct key {
 	char *word;
 	int count;
@@ -50,6 +47,10 @@ struct key keytab[] = {
  {"volatile", 0},
  {"while", 0}
 };
+
+
+int getword(char *, int);
+int binsearch(char *word, struct key tab[], int n);
 
 int getword(char *word, int lim) {
 
