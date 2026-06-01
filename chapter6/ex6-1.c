@@ -96,11 +96,11 @@ int getword(char *word, int lim) {
 		return getword(word, lim);
 	}
 
-	if (c = '\'') {			// character
+	if (c == '\'') {			// character
 		while ((c = getch()) != EOF)
 			if (c == '\'')
 				break;
-		return getoword(word, lim);
+		return getword(word, lim);
 	}
 
 
