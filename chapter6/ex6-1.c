@@ -81,21 +81,18 @@ int getword(char *word, int lim) {
 			return getword(word, lim);
 		}
 
-		if (d == '/') {
+		if (d == '/') {		// one liner
 			while ((c = getch()) != '\n' && c != EOF)
 				;
 			return getword(word, lim);
 		}
+		ungetch(d);
 	}
-
-	for ( ; --lim > 0; w++)
-		if (!isalnum(*w = getch())) {
-			ungetch(*w);
-			break;
-		}
+	
 	*w = '\0';
 	return word[0];
 }
+
 
 /* count C keywords */
 int main() {
