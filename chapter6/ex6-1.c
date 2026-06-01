@@ -116,9 +116,12 @@ int getword(char *word, int lim) {
 				break;
 			}
 			*w++ = c;
+		}
+		*w = '\0';
+		return word[0];
 	}
 	*w = '\0';
-	return word[0];
+	return c;
 }
 
 
@@ -127,6 +130,7 @@ int main() {
 
 	int n;
 	char word[MAXWORD];
+
 	while (getword(word, MAXWORD) != EOF)
 		if (isalpha(word[0]))
 			if ((n = binsearch(word, keytab, NKEYS)) >= 0)
