@@ -25,6 +25,10 @@ struct tnode *addtree(struct tnode *, char *);
 void treeprint(struct tnode *);
 int getword(char *, int);
 
+struct tnode *talloc(void);
+char *strdup(char *s);
+
+
 int main(int argc, char *argv[]) {
 
 	if (argc == 2)			// paramater search length
@@ -43,6 +47,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+
 // in-order print of tree p
 void treeprint(struct tnode *p) {
 
@@ -51,4 +56,24 @@ void treeprint(struct tnode *p) {
 		printf("%4d %s\n", p->count, p->word);
 		treeprint(p->right);
 	}
+}
+
+
+// make a tnode
+struct tnode *talloc(void) {
+
+	return (struct tnode *) malloc(sizeof(struct tnode));
+}
+
+
+// make duplicate of s
+char *strdup(char *s) {
+	
+	char *p;
+	p = (char *) malloc(strlen(s) + 1); 	// +1 for nullterm
+
+	if (p != NULL)
+		strcpy(p, s);
+
+	return p;
 }
