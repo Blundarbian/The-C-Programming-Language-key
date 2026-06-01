@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <string.h>
 
+
 #define MAX 100
 
 int csearch = 6;	// num of character to search defaults to 6
@@ -23,11 +24,10 @@ struct tnode {
 
 struct tnode *addtree(struct tnode *, char *);
 void treeprint(struct tnode *);
-int getword(char *, int);
 
 struct tnode *talloc(void);
-char *strdup(char *s);
-
+char *sstrdup(char *s);
+int getword(char *word, int lim);
 
 int main(int argc, char *argv[]) {
 
@@ -48,17 +48,21 @@ int main(int argc, char *argv[]) {
 }
 
 
-struct treenode *addtree(struct tnode *p, char *w) {
+// add a node with word w, at or below node p;
+struct tnode *addtree(struct tnode *p, char *w) {
 
 	int cond;
+	char sub [MAX];
+	strncpy(sub, w, csearch);
+	sub[csearch] = '\0';
 
 	if (p == NULL) {		// new word and node
 		p = talloc();
-		p->word = strdup(w);
+		p->word = sstrdup(w);
 		p->count = 1;
 		p->left = p->right = NULL;
 	}
-	else if ((cond = strcmp(w, p->word)) == 0)
+	else if ((cond = strcmp(sub, p->word)) == 0)
 		p->count++;		// repeated word
 
 	else if (cond < 0)	// less than words into left subtree
@@ -90,7 +94,7 @@ struct tnode *talloc(void) {
 
 
 // make duplicate of s
-char *strdup(char *s) {
+char *sstrdup(char *s) {
 	
 	char *p;
 	p = (char *) malloc(strlen(s) + 1); 	// +1 for nullterm
@@ -99,4 +103,29 @@ char *strdup(char *s) {
 		strcpy(p, s);
 
 	return p;
+}
+
+int getword(char *word, int lim) {
+
+	int c;
+	char *w = word;
+
+	while (isspace(c = getchar()))
+		;
+
+	if (c != EOF)
+		*w++ = c;
+
+	if (!isalpha(c)) {
+		*w = '\0';
+		return c;
+	}
+
+	for (; --lim > 0; w++)
+		if (!isalnum(*w = getchar())) {
+			ungetc(w);
+			break;
+		}
+	*w = '\0';
+	return word[0];
 }
