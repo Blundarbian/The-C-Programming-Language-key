@@ -103,7 +103,20 @@ int getword(char *word, int lim) {
 		return getoword(word, lim);
 	}
 
-	
+
+
+	if (isalpha(c)) {
+		*w++ = c;
+
+		while (--lim > 0) {
+			c = getch();
+
+			if (!isalnum(c)) {
+				ungetch(c);
+				break;
+			}
+			*w++ = c;
+	}
 	*w = '\0';
 	return word[0];
 }
