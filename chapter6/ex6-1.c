@@ -11,24 +11,6 @@
 #define MAXWORD 100
 #define BUFF 100
 
-char buf[BUFF];
-int bp = 0;
-
-int getch(void);
-void ungetch(int);
-
-int getch(void) { return (bp > 0) ? buf[--bp] : getchar(); }
-
-void ungetch(int c) {
-	
-	if (bp >= BUFF)
-		printf("error: too many char in buf\n");
-	else 
-		buf[bp++] = c;
-}
-
-#define NKEYS (sizeof keytab / sizeof(keytab[0]))
-
 struct key {
 	char *word;
 	int count;
@@ -48,9 +30,25 @@ struct key keytab[] = {
  {"while", 0}
 };
 
+#define NKEYS (sizeof keytab / sizeof(keytab[0]))
 
+char buf[BUFF];
+int bp = 0;
+
+int getch(void);
+void ungetch(int);
 int getword(char *, int);
 int binsearch(char *word, struct key tab[], int n);
+
+int getch(void) { return (bp > 0) ? buf[--bp] : getchar(); }
+
+void ungetch(int c) {
+	
+	if (bp >= BUFF)
+		printf("error: too many char in buf\n");
+	else 
+		buf[bp++] = c;
+}
 
 int getword(char *word, int lim) {
 
@@ -60,7 +58,7 @@ int getword(char *word, int lim) {
 	while (isspace(c = getch())) 	// spaces
 		;
 
-	if (c != '#') {			// preprocessor 
+	if (c == '#') {			// preprocessor 
 		while ((c = getch()) != '\n' && c != EOF)
 			;
 		return getword(word, lim);
@@ -70,7 +68,7 @@ int getword(char *word, int lim) {
 		
 		d = getch();
 
-		if (c == '*') {		// multiline  
+		if (d == '*') {		// multiline  
 			int p = 0;
 
 			while ((c = getch()) != EOF) {
