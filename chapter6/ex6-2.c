@@ -1,0 +1,31 @@
+/* Exercise 6-2. Write a program that reads a C program 
+ * and prints in alphabetical order each group of variable 
+ * names that are identical in the first 6 characters, 
+ * but different somewhere thereafter. Don't count words 
+ * within strings and comments. Make 6 a parameter that 
+ * can be set from the command line
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 100
+
+int csearch = 6;	// num of character to search defaults to 6
+
+struct tnode {
+	char *word			// points to word 
+	int count;			// num of occurences
+	struct tnode *left, *right	// l/r children
+};
+
+struct tnode *addtree(struct tnode *, char *);
+void treeprint(struct tnode *);
+int getword(char *, int);
+
+int main(int argc, char *argv[]) {
+
+	return 0;
+}
