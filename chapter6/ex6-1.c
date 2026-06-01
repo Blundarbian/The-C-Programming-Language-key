@@ -51,18 +51,26 @@ struct key {
 
 int getword(char *word, int lim) {
 
-	int c, getch(void);
-	void ungetch(int);
+	int c, d;
 	char *w = word;
 
-	while (isspace(c = getch()))
+	while (isspace(c = getch())) 	// spaces
 		;
 
-	if (c != EOF)
-		*w++ = c;
-	if (!isalpha(c)) {
-		*w = '\0';
-		return c;
+	if (c != '#')			// preprocessor
+		while ((c = getch()) != '\n' && c != EOF)
+			;
+
+	if (c == '/') {			// comment start
+		
+		d = getch();
+
+		if (c == '*') {		// multiline  
+			int p = 0;
+
+			while ((c = getch()) != EOF) {
+		
+		}
 	}
 
 	for ( ; --lim > 0; w++)
