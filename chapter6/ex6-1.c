@@ -30,12 +30,14 @@ void ungetch(int c) {
 #define NKEYS (sizeof keytab / sizeof(keytab[0]))
 
 int getword(char *, int);
-int binsearch(char *word, struct key, int n);
+int binsearch(char *word, struct key tab[], int n);
 
 struct key {
 	char *word;
 	int count;
-} keytab[] = {
+};
+
+struct key keytab[] = {
  {"auto", 0} ,
  {"break", 0} ,
  {"case", 0} ,
@@ -57,9 +59,11 @@ int getword(char *word, int lim) {
 	while (isspace(c = getch())) 	// spaces
 		;
 
-	if (c != '#')			// preprocessor
+	if (c != '#') {			// preprocessor 
 		while ((c = getch()) != '\n' && c != EOF)
 			;
+		return getword(word, lim);
+	}
 
 	if (c == '/') {			// comment start
 		
@@ -69,8 +73,13 @@ int getword(char *word, int lim) {
 			int p = 0;
 
 			while ((c = getch()) != EOF) {
-		
+				if (p == '*' && c == '/')	
+					break;
+				p = c;
+			}
+			return getword(word, lim);
 		}
+
 	}
 
 	for ( ; --lim > 0; w++)
@@ -85,13 +94,11 @@ int getword(char *word, int lim) {
 /* count C keywords */
 int main() {
 
-	struct key keytab[NKEYS];
-
 	int n;
 	char word[MAXWORD];
 	while (getword(word, MAXWORD) != EOF)
 		if (isalpha(word[0]))
-			if ((n = binsearch(word, key, NKEYS)) >= 0)
+			if ((n = binsearch(word, keytab, NKEYS)) >= 0)
 				keytab[n].count++;
 
 	for (n = 0; n < NKEYS; n++)
@@ -101,7 +108,7 @@ int main() {
 }
 
 /* find word in tab[0]...tab[n-1] */
-int binsearch(char *word, struct keytab[], int n) {
+int binsearch(char *word, struct key tab[], int n) {
 
 	int cond;
 	int low, high, mid;
