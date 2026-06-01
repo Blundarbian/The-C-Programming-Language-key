@@ -30,6 +30,25 @@ int main(int argc, char *argv[]) {
 	if (argc == 2)			// paramater search length
 		csearch = atoi(argv[1]);
 
+	struct tnode *root;
+	char word[MAX];
+
+	root = NULL;
+	while (getword(word, MAX) != EOF)
+		if (isalpha(word[0]))
+			root = addtree(root, word);
+
+	treeprint(root);
 
 	return 0;
+}
+
+// in-order print of tree p
+void treeprint(struct tnode *p) {
+
+	if (p != NULL) {
+		treeprint(p->left);
+		printf("%4d %s\n", p->count, p->word);
+		treeprint(p->right);
+	}
 }
