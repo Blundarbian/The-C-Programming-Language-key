@@ -88,6 +88,21 @@ int getword(char *word, int lim) {
 		}
 		ungetch(d);
 	}
+
+	if (c == '"') {			// string
+		while ((c = getch()) != EOF) 
+			if (c == '"')
+				break;
+		return getword(word, lim);
+	}
+
+	if (c = '\'') {			// character
+		while ((c = getch()) != EOF)
+			if (c == '\'')
+				break;
+		return getoword(word, lim);
+	}
+
 	
 	*w = '\0';
 	return word[0];
