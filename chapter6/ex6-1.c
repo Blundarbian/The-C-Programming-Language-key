@@ -58,6 +58,9 @@ int getword(char *word, int lim) {
 	while (isspace(c = getch())) 	// spaces
 		;
 
+	if (c == EOF)
+		return EOF;
+
 	if (c == '#') {			// preprocessor 
 		while ((c = getch()) != '\n' && c != EOF)
 			;
