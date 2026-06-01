@@ -123,7 +123,7 @@ int getword(char *word, int lim) {
 
 	for (; --lim > 0; w++)
 		if (!isalnum(*w = getchar())) {
-			ungetc(w);
+			ungetc(*w, stdin);
 			break;
 		}
 	*w = '\0';
