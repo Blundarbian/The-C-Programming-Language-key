@@ -16,9 +16,9 @@
 int csearch = 6;	// num of character to search defaults to 6
 
 struct tnode {
-	char *word			// points to word 
+	char *word;			// points to word 
 	int count;			// num of occurences
-	struct tnode *left, *right	// l/r children
+	struct tnode *left, *right;	// l/r children
 };
 
 struct tnode *addtree(struct tnode *, char *);
@@ -26,6 +26,10 @@ void treeprint(struct tnode *);
 int getword(char *, int);
 
 int main(int argc, char *argv[]) {
+
+	if (argc == 2)			// paramater search length
+		csearch = atoi(argv[1]);
+
 
 	return 0;
 }
