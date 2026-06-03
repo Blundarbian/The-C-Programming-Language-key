@@ -12,14 +12,15 @@
 #define SLINES 100
 int line = 0;		// current line number
 			//
-char noise[] = {"the", "and", "or", "but", "like", "in", "a", "of"};
+char noise[][5] = {{"the"}, {"and"}, {"or"}, {"but"}, {"like"}, {"in"}, {"a"}, {"of"}};
 
 typedef struct tnode {
 	char *word;
 	int count;
-	int lines[SLINES]
+	int lines[SLINES];
 	int nlines;
-	struct tnode *left, *right;
+	struct tnode *left;
+	struct tnode *right;
 } node;
 
 
@@ -40,11 +41,11 @@ node *addtree(node *p, char *w) {
 		p->count = 1;
 		p->lines[0] = line;
 		p->nlines = 1;
-		p->left = p-right = NULL;
+		p->left = p->right = NULL;
 	}
 	else if ((cond = strcmp(w, p->word)) == 0) { 	// repeat	
 		p->count++;
-		p->lines[nline] = line;
+		p->lines[p->nlines] = line;
 		p->nlines++;
 	}
 	else if (cond < 0) 				// less than words into left
@@ -84,7 +85,31 @@ char *sstrdup(char *s) {
 	return p;
 }
 
-int getword(char *word, int lim);
+int getword(char *word, int lim) {
+	int c;
+	char *w = word;
+
+	while (c = getchar()) {
+		if (!isspace(c)) break;
+	}
+
+
+	if (c != EOF)
+		*w++ = c;
+
+	if (!isalpha(c)) {
+		*w = '\0';
+		return c;
+	}
+
+	for (; --lim > 0; w++)
+		if (!isalnum(*w = getchar())) {
+			ungetc(*w, stdin);
+			break;
+		}
+	*w = '\0';
+	return word[0];
+}
 
 int main() {
 
@@ -92,7 +117,7 @@ int main() {
 	root = NULL;
 	char word[SLINES];
 
-	while (getword(word, MAX) != EOF)
+	while (getword(word, SLINES) != EOF)
 		if (isalpha(word[0]))
 			root = addtree(root, word);
 
