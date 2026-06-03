@@ -10,9 +10,11 @@
 #include <ctype.h>
 
 #define SLINES 100
-int line = 0;		// current line number
-			//
-char noise[][5] = {{"the"}, {"and"}, {"or"}, {"but"}, {"like"}, {"in"}, {"a"}, {"of"}};
+int line = 1;		// line number 
+			
+#define NROW 8
+#define NCOL 5 		// small 2d arr for random noise words
+char noise[NROW][NCOL] = {{"the"}, {"and"}, {"or"}, {"but"}, {"like"}, {"in"}, {"a"}, {"of"}};
 
 typedef struct tnode {
 	char *word;
@@ -30,6 +32,7 @@ node *addtree(node *, char *);
 void treeprint(node *);
 char *sstrdup(char *);
 int getword(char *, int lim);
+int isnoise(char *);
 
 node *addtree(node *p, char *w) {
 
@@ -45,8 +48,11 @@ node *addtree(node *p, char *w) {
 	}
 	else if ((cond = strcmp(w, p->word)) == 0) { 	// repeat	
 		p->count++;
-		p->lines[p->nlines] = line;
-		p->nlines++;
+
+		if (!(p->lines[p->nlines - 1] == line)) { // if line num not previously placed
+			p->lines[p->nlines] = line; 
+			p->nlines++;
+		}
 	}
 	else if (cond < 0) 				// less than words into left
 		p->left = addtree(p->left, w);
@@ -61,7 +67,7 @@ void treeprint(node *p) {
 	if (p != NULL) {
 		treeprint(p->left);
 		
-		printf("%s occurs %4d times at lines [", p->word, p->count);
+		printf("%s occurs %4d time(s) at lines [", p->word, p->count);
 		for (int i = 0; i < p->nlines; i++) 
 			printf(" %d", p->lines[i]);
 		printf(" ]\n");
@@ -113,6 +119,14 @@ int getword(char *word, int lim) {
 	return word[0];
 }
 
+int isnoise(char *w) {
+	int cond;
+	for (int i = 0; i < NROW; i++)
+		if ((cond = strcmp(w, noise[i])) == 0)
+			return 0;
+	return 1;
+}
+
 int main() {
 
 	node *root;
@@ -121,11 +135,10 @@ int main() {
 
 	while (getword(word, SLINES) != EOF)
 		if (isalpha(word[0]))
-			root = addtree(root, word);
+			if (isnoise(word))
+				root = addtree(root, word);
 
 	treeprint(root);
 
 	return 0;
 }
-
-
