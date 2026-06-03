@@ -112,7 +112,7 @@ int isnoise(char *w) {
 void sortnodes(node *a) {
 
 	for (int i = 0; i < nodenum; i++) {
-		for (int j = 0; nodenum - 1; j++) {
+		for (int j = 0; j < nodenum - 1; j++) {
 			if ((a[j].count) < (a[j + 1].count)) {
 				node temp = a[j];
 				a[j] = a[j + 1];
@@ -143,10 +143,11 @@ int main() {
 		if (isalpha(word[0]) && isnoise(word))
 			root = addtree(root, word);
 	
+	// create array for the size of nodes in our tree
 	node *snodes = (node *) malloc(nodenum * sizeof(node));
-	int id = 0;
-	populate(root, snodes, &id);		
-	sortnodes(snodes);	
+	int id = 0; // index for arr of sorted nodes
+	populate(root, snodes, &id); // fill arr with nodes from tree
+	sortnodes(snodes);	// bubble sort nodes from tree
 
 	for (int i = 0; i < nodenum; i++)
 		printf("%s occurs %d times\n", snodes[i].word, snodes[i].count);
