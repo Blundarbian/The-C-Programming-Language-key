@@ -29,7 +29,7 @@ char *sstrdup(char *);
 int getword(char *, int lim);
 int isnoise(char *);
 void sortnodes(node *);
-void populate(node *p, node *l);
+void populate(node *p, node *arr, int *);
 
 node *addtree(node *p, char *w) {
 
@@ -113,7 +113,7 @@ void sortnodes(node *a) {
 
 	for (int i = 0; i < nodenum; i++) {
 		for (int j = 0; nodenum - 1; j++) {
-			if ((a[j].count) > (a[j + 1].count)) {
+			if ((a[j].count) < (a[j + 1].count)) {
 				node temp = a[j];
 				a[j] = a[j + 1];
 				a[j + 1] = temp;
@@ -123,13 +123,13 @@ void sortnodes(node *a) {
 
 }
 
-void populate(node *p, node *l) {
+void populate(node *p, node *arr, int *i) {
 
 	if (p != NULL) {
-		populate(p->left, l);
-		l = p;
-		l++;
-		populate(p->right, l);
+		populate(p->left, arr, i);
+		arr[*i] = *p;
+		(*i)++;	// breaks incrimenting while indexing 
+		populate(p->right, arr, i);
 	}
 }
 
@@ -143,8 +143,9 @@ int main() {
 		if (isalpha(word[0]) && isnoise(word))
 			root = addtree(root, word);
 	
-	node *snodes = (node *) malloc(nodenum);
-	populate(root, snodes);		
+	node *snodes = (node *) malloc(nodenum * sizeof(node));
+	int id = 0;
+	populate(root, snodes, &id);		
 	sortnodes(snodes);	
 
 	for (int i = 0; i < nodenum; i++)
