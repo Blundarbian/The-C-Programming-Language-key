@@ -1,6 +1,7 @@
-/* Exercise 6-4. Write a program that prints the distinct words 
- * in its input sorted into decreasing order of frequency of 
- * occurrence. Precede each word by its count.
+/* Exercise 6-4. Write a program that prints the 
+ * distinct words in its input sorted into decreasing
+ * order of frequency of occurrence. Precede each word 
+ * by its count.
  */
 
 #include <stdio.h>
@@ -10,20 +11,25 @@
 
 #define MAX 100
 
+int nodenum = 0;
+			
 typedef struct tnode {
 	char *word;
 	int count;
-	struct tnode *left, *right;
+	struct tnode *left;
+	struct tnode *right;
 } node;
 
 
 node *talloc(void); 
 node *addtree(node *, char *);
 
-void treeprint(node *);
+void nodeprint(node *);
 char *sstrdup(char *);
 int getword(char *, int lim);
 int isnoise(char *);
+void sortnodes(node *);
+void populate(node *p, node *l);
 
 node *addtree(node *p, char *w) {
 
@@ -34,10 +40,10 @@ node *addtree(node *p, char *w) {
 		p->word = sstrdup(w);
 		p->count = 1;
 		p->left = p->right = NULL;
+		nodenum++;
 	}
-	else if ((cond = strcmp(w, p->word)) == 0) { 	// repeat	
+	else if ((cond = strcmp(w, p->word)) == 0)  	// repeat	
 		p->count++;
-	}
 	else if (cond < 0) 				// less than words into left
 		p->left = addtree(p->left, w);
 	else
@@ -46,12 +52,11 @@ node *addtree(node *p, char *w) {
 	return  p;
 }
 
-void treeprint(node *p) {
+void nodeprint(node *p) {
 
-	if (p != NULL) {
-		treeprint(p->left);
-		printf("%s occurs %4d time(s) at lines [", p->word, p->count);
-		treeprint(p->right);
+	for (int i = 0; i < nodenum; i++) {
+		p++;
+		printf("%s occurs %4d time(s)\n", p->word, p->count);
 	}
 }
 
@@ -74,7 +79,7 @@ int getword(char *word, int lim) {
 	int c;
 	char *w = word;
 
-	while (isspace(c = getchar()))
+	while (isspace(c = getchar())) 
 		;
 
 	if (c != EOF)
@@ -95,12 +100,37 @@ int getword(char *word, int lim) {
 }
 
 int isnoise(char *w) {
+
 	const char noise[][5] = {{"the"}, {"and"}, {"or"}, {"but"}, {"like"}, {"in"}, {"a"}, {"of"}};
 	int cond;
 	for (int i = 0; i < 8; i++)
 		if ((cond = strcmp(w, noise[i])) == 0)
 			return 0;
 	return 1;
+}
+
+void sortnodes(node *a) {
+
+	for (int i = 0; i < nodenum; i++) {
+		for (int j = 0; nodenum - 1; j++) {
+			if ((a[j].count) > (a[j + 1].count)) {
+				node temp = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = temp;
+			}
+		}
+	}
+
+}
+
+void populate(node *p, node *l) {
+
+	if (p != NULL) {
+		populate(p->left, l);
+		l = p;
+		l++;
+		populate(p->right, l);
+	}
 }
 
 int main() {
@@ -110,11 +140,18 @@ int main() {
 	char word[MAX];
 
 	while (getword(word, MAX) != EOF)
-		if (isalpha(word[0]))
-			if (isnoise(word))
-				root = addtree(root, word);
+		if (isalpha(word[0]) && isnoise(word))
+			root = addtree(root, word);
+	
+	node *snodes = (node *) malloc(nodenum);
+	populate(root, snodes);		
+	sortnodes(snodes);	
 
-	treeprint(root);
+	for (int i = 0; i < nodenum; i++)
+		printf("%s occurs %d times\n", snodes[i].word, snodes[i].count);
+
+	free(snodes);
+	snodes = NULL;
 
 	return 0;
 }
