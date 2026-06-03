@@ -89,7 +89,9 @@ int getword(char *word, int lim) {
 	int c;
 	char *w = word;
 
-	while (c = getchar()) {
+	while (1) {
+		c = getchar();
+		if (c == '\n') line++;
 		if (!isspace(c)) break;
 	}
 
