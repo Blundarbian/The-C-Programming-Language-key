@@ -7,11 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define SLINES 100
 int line = 0;		// current line number
 			//
-char noise[] = {"the", "and"};
+char noise[] = {"the", "and", "or", "but", "like", "in", "a", "of"};
 
 typedef struct tnode {
 	char *word;
@@ -24,10 +25,12 @@ typedef struct tnode {
 
 node *talloc(void); 
 node *addtree(node *, char *);
+
 void treeprint(node *);
+char *sstrdup(char *);
+int getword(char *, int lim);
 
-
-node *addtree(node *p, char *s) {
+node *addtree(node *p, char *w) {
 
 	int cond;	
 
@@ -39,14 +42,17 @@ node *addtree(node *p, char *s) {
 		p->nlines = 1;
 		p->left = p-right = NULL;
 	}
-	else if ((cond = strcmp(s, p->word)) == 0) { 	// repeat	
+	else if ((cond = strcmp(w, p->word)) == 0) { 	// repeat	
 		p->count++;
 		p->lines[nline] = line;
 		p->nlines++;
 	}
 	else if (cond < 0) 				// less than words into left
+		p->left = addtree(p->left, w);
+	else
+		p->right = addtree(p->right, w);
 
-
+	return  p;
 }
 
 void treeprint(node *p) {
@@ -63,12 +69,34 @@ void treeprint(node *p) {
 	}
 }
 
-
 node *talloc(void) {
 	return (node *) malloc(sizeof(node)); 
 }
 
+char *sstrdup(char *s) {
+
+	char *p;
+	p = (char *) malloc(strlen(s) + 1);
+
+	if (p != NULL)
+		strcpy(p, s);
+
+	return p;
+}
+
+int getword(char *word, int lim);
+
 int main() {
+
+	node *root;
+	root = NULL;
+	char word[SLINES];
+
+	while (getword(word, MAX) != EOF)
+		if (isalpha(word[0]))
+			root = addtree(root, word);
+
+	treeprint(root);
 
 	return 0;
 }
