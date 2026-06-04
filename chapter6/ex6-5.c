@@ -90,6 +90,15 @@ struct nlist *nldup(struct nlist *p) {
 	return np;
 }
 
+char *sstrdup(char *s) {
+
+	char *p;
+	p = (char *) malloc(strlen(s) + 1);
+	if (p != NULL) strcpy(p, s);
+
+	return p;
+}
+
 
 // put (name, defn) in hashtab
 struct nlist *install(char *name, char *defn) {
