@@ -19,9 +19,9 @@ static struct nlist *hashtab[HASHSIZE];		// ptr table
 unsigned hash(char *);
 struct nlist *lookup(char *);
 struct nlist *undef(char *);
-struct nlist *nldup(struct *p);
+struct nlist *nldup(struct nlist *p);
 struct nlist *install(char *name, char *defn);
-char *strdup(char *);
+char *sstrdup(char *);
 
 
 // form hash value for string s
@@ -41,7 +41,7 @@ struct nlist *lookup(char *s) {
 
 	for (np = hashtab[hash(s)]; np != NULL; np = np->next)
 		if (strcmp(s, np->name) == 0)
-			return mp;		// found 
+			return np;		// found 
 	return NULL;				// not found
 }
 
@@ -52,19 +52,19 @@ struct nlist *undef(char *name) {
 	struct nlist *np;
 	struct nlist *prev;
 	struct nlist *post;
-	unsigned hashval;
 
 	if ((np = lookup(name)) == NULL) 	// not found
 		return NULL;
 
-	prev = hashtab[hash(s)];		// find prev node
-	while (strcmp(s, prev->next->name) == 0)
+	prev = hashtab[hash(name)];		// find prev node
+	while (strcmp(name, prev->next->name) == 0)
 		prev = prev->next;		
 
 	post = np->next;			// find post
 
-	struct nlist nreturn = nldup(np);
+	struct nlist *nreturn = nldup(np);
 	free(np);			
+
 	if (post == NULL) 		// next is NULL
 		prev->next = NULL;
 	else 
@@ -73,7 +73,7 @@ struct nlist *undef(char *name) {
 	return nreturn;
 }
 
-struct nlist *nldup(struct *p) {
+struct nlist *nldup(struct nlist *p) {
 
 	struct nlist *np;
 	
@@ -100,7 +100,7 @@ struct nlist *install(char *name, char *defn) {
 	if ((np = lookup(name)) == NULL) {	// not found
 		np = (struct nlist *) malloc(sizeof(*np));
 
-		if (np = NULL || (np->name = sstrdup(name)) == NULL)
+		if (np == NULL || (np->name = sstrdup(name)) == NULL)
 			return NULL;
 
 		hashval = hash(name);
