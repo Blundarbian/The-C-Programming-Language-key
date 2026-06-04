@@ -46,6 +46,7 @@ struct nlist *lookup(char *s) {
 }
 
 
+// remove the first instance of a name from the list
 struct nlist *undef(char *name) {
 
 	struct nlist *np;
@@ -56,20 +57,20 @@ struct nlist *undef(char *name) {
 	if ((np = lookup(name)) == NULL) 	// not found
 		return NULL;
 
-	prev = hashtab[hash(s)];
+	prev = hashtab[hash(s)];		// find prev node
 	while (strcmp(s, prev->next->name) == 0)
-		prev = prev->next;
+		prev = prev->next;		
 
-	post = np->next;
+	post = np->next;			// find post
 
-	if (post == NULL) {
-		free(np);
+	struct nlist nreturn = nldup(np);
+	free(np);			
+	if (post == NULL) 		// next is NULL
 		prev->next = NULL;
-	}
-	else {
-		free(np);
-		prev->next = post;
-	}
+	else 
+		prev->next = post; 	// next is node
+	
+	return nreturn;
 }
 
 struct nlist *nldup(struct *p) {
