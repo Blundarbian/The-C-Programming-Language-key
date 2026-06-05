@@ -4,11 +4,12 @@
  * this section. You may also find getch and ungetch 
  * helpful.
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define HASHSIZE 101
+#define HASHSIZE 100
 
 struct nlist {			// table entry
 	struct nlist *next;	// next entry
@@ -24,6 +25,18 @@ struct nlist *undef(char *);
 struct nlist *nldup(struct nlist *p);
 struct nlist *install(char *name, char *defn);
 char *sstrdup(char *);
+void printhash();
+
+
+int main() {
+
+	install("John", "pizza");
+	install("Dave", "pie");
+	install("Lary", "crust");
+	printhash();
+
+	return 0;
+}
 
 
 // form hash value for string s
@@ -51,30 +64,31 @@ struct nlist *lookup(char *s) {
 // remove the first instance of a name from the list
 struct nlist *undef(char *name) {
 
-	struct nlist *np;
-	struct nlist *prev;
-	struct nlist *post;
+	unsigned h = hash(name);
+	struct nlist *np = hashtab[h];
+	struct nlist *prev = NULL;
 
-	if ((np = lookup(name)) == NULL) 	// not found
-		return NULL;
+	while (np && strcmp(np->name, name) != 0) {
+		prev = np;
+		np = np->next;
+	}
 
-	prev = hashtab[hash(name)];		// find prev node
-	while (strcmp(name, prev->next->name) == 0)
-		prev = prev->next;		
+	if (np == NULL) return NULL;
+	struct nlist *r = nldup(np);
 
-	post = np->next;			// find post
+	if (prev == NULL)	// prev is NULL when np is first element
+		hashtab[h] = np->next;	
+	else
+		prev->next = np->next;	
 
-	struct nlist *nreturn = nldup(np);
-	free(np);			
+	free(np->name);
+	free(np->defn);
+	free(np);
 
-	if (post == NULL) 		// next is NULL
-		prev->next = NULL;
-	else 
-		prev->next = post; 	// next is node
-	
-	return nreturn;
+	return r;
 }
 
+// deep copy of struct item
 struct nlist *nldup(struct nlist *p) {
 
 	struct nlist *np;
@@ -85,8 +99,8 @@ struct nlist *nldup(struct nlist *p) {
 
 	if (np != NULL) {
 		np->next = p->next;
-		np->name = p->name;
-		np->defn = p->defn;
+		np->name = strdup(p->name);
+		np->defn = strdup(p->defn);
 	}
 
 	return np;
@@ -125,4 +139,19 @@ struct nlist *install(char *name, char *defn) {
 		return NULL;
 
 	return np;
+}
+
+void printhash() {
+
+	for (int i = 0; i < HASHSIZE; i++) {
+		if (hashtab[i] != NULL) {
+			for (struct nlist *p = hashtab[i]; p != NULL; p = p->next) {
+				printf("Hash %s, def %s", p->name, p->defn);
+				if (p->next != NULL)
+					printf(" -> ");
+				else
+					printf("\n");
+			}
+		}
+	}
 }
