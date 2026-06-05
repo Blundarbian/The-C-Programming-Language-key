@@ -1,8 +1,5 @@
-/* Exercise 6-6. Implement a simple version of the 
- * #define processor (i.e., no arguments) suitable 
- * for use with C programs, based on the routines of 
- * this section. You may also find getch and ungetch 
- * helpful.
+/* Exercise 6-5. Write a function undef that will remove a name 
+ * and definition from the table maintained by lookup and install
  */
 
 #include <stdio.h>
@@ -33,6 +30,8 @@ int main() {
 	install("John", "pizza");
 	install("Dave", "pie");
 	install("Lary", "crust");
+	printhash();
+	undef("Lary");
 	printhash();
 
 	return 0;
