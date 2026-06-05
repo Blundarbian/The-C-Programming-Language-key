@@ -27,7 +27,7 @@ struct nlist *undef(char *);
 struct nlist *nldup(struct nlist *p);
 struct nlist *install(char *name, char *defn);
 char *sstrdup(char *);
-void printhash();
+void printdef();
 
 int main() {
 	char line[SIZE];
@@ -45,7 +45,7 @@ int main() {
 
 			install(name, defn);
 		}
-	printhash();
+	printdef();
 }
 
 
@@ -151,12 +151,12 @@ struct nlist *install(char *name, char *defn) {
 	return np;
 }
 
-void printhash() {
+void printdef() {
 
 	for (int i = 0; i < HASHSIZE; i++) {
 		if (hashtab[i] != NULL) {
 			for (struct nlist *p = hashtab[i]; p != NULL; p = p->next) {
-				printf("Hash %s, def %s", p->name, p->defn);
+				printf("#define %s %s", p->name, p->defn);
 				if (p->next != NULL)
 					printf(" -> ");
 				else
