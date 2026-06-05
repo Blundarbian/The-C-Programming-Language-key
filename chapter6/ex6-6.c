@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define HASHSIZE 100
+#define SIZE 100
 
 struct nlist {			// table entry
 	struct nlist *next;	// next entry
@@ -27,15 +29,23 @@ struct nlist *install(char *name, char *defn);
 char *sstrdup(char *);
 void printhash();
 
-
 int main() {
+	char line[SIZE];
+	char name[SIZE];
+	char defn[SIZE];
 
-	install("John", "pizza");
-	install("Dave", "pie");
-	install("Lary", "crust");
+	while (fgets(line, SIZE, stdin) != NULL)
+		if (strncmp(line, "#define", 7) == 0) {
+
+			char *token = strtok(line ," ");
+			token = strtok(NULL, " ");
+
+			if (token != NULL) strcpy(name, token);
+			if (token != NULL) strcpy(defn, token);
+
+			install(name, defn);
+		}
 	printhash();
-
-	return 0;
 }
 
 
