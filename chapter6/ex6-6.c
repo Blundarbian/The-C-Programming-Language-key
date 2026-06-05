@@ -31,21 +31,39 @@ void printdef();
 
 int main() {
 	char line[SIZE];
-	char name[SIZE];
-	char defn[SIZE];
+	char name[SIZE] = "";
+	char defn[SIZE] = "";
+	char *token;
 
 	while (fgets(line, SIZE, stdin) != NULL)
 		if (strncmp(line, "#define", 7) == 0) {
 
-			char *token = strtok(line ," ");
+			printf("%s", line);
+
+			token = strtok(line ," ");
 			token = strtok(NULL, " ");
 
 			if (token != NULL) strcpy(name, token);
+			token = strtok(NULL, "\n");
 			if (token != NULL) strcpy(defn, token);
 
 			install(name, defn);
 		}
-	printdef();
+		else {
+			token = strtok(line ," ");
+			char fixed[SIZE] = "";
+			while (token != NULL) {
+
+				struct nlist *item;
+				if ((item = lookup(token)) != NULL)
+					strcat(fixed, item->defn);
+				else 
+					strcat(fixed, token);
+
+				token = strtok(NULL, " ");
+			}
+			printf("%s", fixed);
+		}
 }
 
 
