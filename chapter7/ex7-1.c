@@ -13,9 +13,9 @@ int main(int argc, char *argv[]) {
 	
 	int c;
 	enum change opt; 
-	if (strcmp(argv[0], "lower") == 0) 
+	if (strcmp(argv[0], "./lower") == 0) 
 		opt = LOWER;
-	else if (strcmp(argv[0], "upper") == 0) 
+	else if (strcmp(argv[0], "./upper") == 0) 
 		opt = UPPER;
 	else {
 		printf("error: %s unrecognized command\n", argv[0]);
