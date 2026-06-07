@@ -11,42 +11,40 @@ void minscanf(char *fmt,...);
 void minscanf(char *fmt,...) {
 
 	va_list ap;
-	char *p;
+	char *p, *sp;
+	int *ip;
+	double *dp;
 
 	va_start(ap, fmt);
 	for (p = fmt; *p; p++) {
 
 		if (*p != '%')
 			continue;
-	
+
 		switch (*++p) {
 			case 'd' :
-				int *ip = va_arg(ap, int *);
-				scanf("%d", &ival);
+				ip = va_arg(ap, int *);
+				scanf("%d", ip);
 				break;
 
 			case 'f' :
-				dval = va_arg(ap, double);
-				scanf("%lf", &dval);
+				dp= va_arg(ap, double *);
+				scanf("%lf", dp);
 				break;	
 
 			case 's' :
-				for (sval = va_arg(ap, char *); *sval; sval++)
-					getchar();
+				sp = va_arg(ap, char *);
+				scanf("%s", sp);
 				break;
 
 			case 'o' :
-				ival = va_arg(ap, int);
-				scanf("%o", &ival);
+				ip= va_arg(ap, int *);
+				scanf("%o", ip);
 				break;
 
 			case 'x' : 
-				ival = va_arg(ap, int);
-				scanf("%x", &ival);
-				break;
-
-			default :
-				getchar();
+				ip = va_arg(ap, int *);
+				scanf("%x", ip);
 				break;
 		}
 	}
@@ -55,19 +53,20 @@ void minscanf(char *fmt,...) {
 
 int main() {
 
-	char *hel;
-	int dec;
-	int oct;
-	int hex;
+	char hel[100];
+	int dec, oct, hex;
 
-	minscanf("%s\n", &hel);
+	minscanf("%s\n", hel);
 	printf("%s\n", hel);
 
 	minscanf("%d\n", &dec);
+	printf("%d\n", dec);
 
 	minscanf("%o\n", &oct);
+	printf("%o\n", oct);
 
 	minscanf("%x\n", &hex);
+	printf("%x\n", hex);
 
 	return 0;
 }
