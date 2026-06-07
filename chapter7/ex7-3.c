@@ -40,6 +40,16 @@ void minprintf(char *fmt,...) {
 					putchar(*sval);
 				break;
 
+			case 'o' :
+				ival = va_arg(ap, int);
+				printf("%o", ival);
+				break;
+
+			case 'x' : 
+				ival = va_arg(ap, int);
+				printf("%x", ival);
+				break;
+
 			default :
 				putchar(*p);
 				break;
@@ -48,4 +58,17 @@ void minprintf(char *fmt,...) {
 	va_end(ap); // clean up when done
 }
 
+int main() {
 
+	char *hel = "Hello, Wolrd!";
+	int dec = 12345; 
+	int oct = 16;
+	int hex = 64;
+
+	minprintf("%s\n", hel);
+	minprintf("%d\n", dec);
+	minprintf("%o\n", oct);
+	minprintf("%x\n", hex);
+
+	return 0;
+}
