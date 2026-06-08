@@ -26,12 +26,27 @@ int main(int argc, char **argv) {
 		fp1 = opentest(prog, argv[1]);
 		fp2 = opentest(prog, argv[2]);
 
-		while ((fgets(line1, LINESIZE, fp1)) != NULL && fgets(line2, LINESIZE, fp2)) {
+		char *f1, *f2;
+
+		while (1) {
+
+			f1 = fgets(line1, LINESIZE, fp1); 
+			f2 = fgets(line2, LINESIZE, fp2);
+
+			if (f1 == NULL && f2 == NULL) // same lengths
+				break;
+
+			if (f1 == NULL || f2 == NULL) { // atleast one is short
+				printf("error : files differ in length\n");
+				exit(3);
+			}
+
+
 			linenum++;
 			if (strcmp(line1, line2) != 0) {
 				printf("line number %d\n", linenum);
-				printf("file %s : %s\n", argv[1], line1);
-				printf("file %s : %s\n", argv[2], line2);
+				printf("file %s : %s", argv[1], line1);
+				printf("file %s : %s", argv[2], line2);
 				exit(0);
 			}
 		}
