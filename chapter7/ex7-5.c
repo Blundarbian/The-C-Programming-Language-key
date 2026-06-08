@@ -85,6 +85,10 @@ void inputoptions(char *s) {
 				stack[0] = 0;
 				break;
 
+			case 'd' :
+				sp--;
+				break;
+
 			default :
 				printf("error: unknown command %s\n", s);
 				break;
