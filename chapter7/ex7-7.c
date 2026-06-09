@@ -40,10 +40,8 @@ void patternfind(char *name, char *pattern) {
 	FILE *fp;
 	char line[MAX];
 
-	if (name == NULL) {
-		fprintf(stderr, "error: no file name given\n");
-		exit(2);
-	}
+	if (name == NULL)
+		fp = stdin;
 
 	if ((fp = fopen(name, "r")) == NULL) {
 		fprintf(stderr, "error: %s cannot open %s\n", prog, name);
@@ -58,5 +56,6 @@ void patternfind(char *name, char *pattern) {
 				printf("%s %s", name, line);
 		}
 	}
-	fclose(fp);
+	if (name)
+		fclose(fp);
 }
