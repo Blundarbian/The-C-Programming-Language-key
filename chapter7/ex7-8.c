@@ -38,7 +38,6 @@ void printpage(FILE *in, FILE *out) {
 int main(int argc, char *argv[]) {
 
 	prog = argv[0];
-	int linec = 0;
 	FILE *fp;
 
 	if (argc == 1) {
@@ -52,7 +51,7 @@ int main(int argc, char *argv[]) {
 				exit(1);
 			}
 			else {
-				fprintf(stdout, "\n\t FILE : %s \n", argv);
+				fprintf(stdout, "\n\t FILE : %s \n", *argv);
 				printpage(fp, stdout);
 				fclose(fp);
 			}
