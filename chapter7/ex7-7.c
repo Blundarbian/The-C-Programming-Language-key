@@ -9,13 +9,47 @@
 #include <string.h>
 
 #define MAX 100
+char *prog;
 
-FILE *load(char *);
-int getline(char *, size_t, FILE *);
-int pattern(FILE *, char *, int, int);
+int pattern(char *name, char *pattern);
 
 int main(int argc, char **argv) {
 
+	char pattern[MAX];
+	prog = argv[0];
+
+	if (argc < 2) {
+		fprintf(stderr, "error: %s pattern is req\n", argv[0]);
+		exit(1);
+	}
+
+	strlcpy(pattern, argv[1], MAX);
 
 	return 0;
+}
+
+int pattern(char *name, char *pattern) {
+
+	FILE *fp;
+	char line[MAX];
+
+	if (name == NULL) {
+		fprintf(stderr, "error: no file name given\n");
+		exit(2);
+	}
+
+	if ((fp = fopen(name, "r")) == NULL) {
+		fprintf(stderr, "error: %s cannot open %s\n", prog, name);
+		exit(3);
+	}
+
+	while (fgets(line, MAX, fp) != NULL) {
+		if (strstr(line, pattern)) {
+			if (name == NULL)
+				printf("%s", line);
+			else
+				printf("%s %s", name, line);
+		}
+	}
+	fclose(fp);
 }
