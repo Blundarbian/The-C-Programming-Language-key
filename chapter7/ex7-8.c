@@ -26,7 +26,7 @@ void printpage(FILE *in, FILE *out) {
 			line++;
 
 			if (line == LINEMAX) {
-				fprintf(stdout, "\n\t pg %d. \n", pg);
+				fprintf(stdout, "\n\n\t --- pg %d --- \n\n", pg);
 				pg++;
 				line = 0;
 			}
@@ -51,13 +51,13 @@ int main(int argc, char *argv[]) {
 				exit(1);
 			}
 			else {
-				fprintf(stdout, "\n\t FILE : %s \n", *argv);
+				fprintf(stdout, "\n\n\t --- FILE : %s --- \n\n", *argv);
 				printpage(fp, stdout);
 				fclose(fp);
 			}
 
 			if (ferror(stdout) == 0)
-				fprintf(stdout, "File %s written succesfully\n", prog);
+				fprintf(stdout, "File %s written succesfully\n", *argv);
 		}
 	return 0;
 }
