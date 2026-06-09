@@ -11,7 +11,7 @@
 #define MAX 100
 char *prog;
 
-int pattern(char *name, char *pattern);
+void patternfind(char *name, char *pattern);
 
 int main(int argc, char **argv) {
 
@@ -23,12 +23,19 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	strlcpy(pattern, argv[1], MAX);
+	strlcpy(pattern, *++argv, MAX);
+
+	if (argc > 2) {
+		while (*++argv)
+			patternfind(*argv, pattern);
+	}
+	else 
+		patternfind(NULL, pattern);
 
 	return 0;
 }
 
-int pattern(char *name, char *pattern) {
+void patternfind(char *name, char *pattern) {
 
 	FILE *fp;
 	char line[MAX];
