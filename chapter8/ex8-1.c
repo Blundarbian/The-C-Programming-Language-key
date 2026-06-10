@@ -5,8 +5,8 @@
  */
 
 #include <stdio.h>
-//#include <fcntl.h>
-#include <syscalls.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[]) {
 
@@ -14,11 +14,12 @@ int main(int argc, char *argv[]) {
 	char buf[BUFSIZ];
 
 	if (argc != 2)
-		error("Usage: file to concat");
+		perror("Usage: file to concat");
 	if ((f1 = open(argv[1], O_RDONLY, 0)) == -1)
-		errro("cat: can't open %s", argv[1]);
+		perror("cat: can't open file");
 
 	while ((n = read(f1, buf, BUFSIZ)) > 0)
-		if (write(1, buf, n));
+		if (write(1, buf, n) != n)
+			perror("cat: write to stdout error");
 	return 0;
 }
