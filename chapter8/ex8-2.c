@@ -2,8 +2,8 @@
  * of explicit bit operations. Compare code size and execution speed.
  */
 
-#include <stdio.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #ifdef NULL
@@ -22,9 +22,9 @@ typedef struct _iobuf {
 	char *base; /* location of buffer */
 	int flag; /* mode of file access */
 	int fd; /* file descriptor */
-} FILE;
+} myFile;
 
-extern FILE _iob[OPEN_MAX];
+extern myFile _iob[OPEN_MAX];
 
 #define stdin (&_iob[0])
 #define stdout (&_iob[1])
@@ -37,10 +37,10 @@ enum _flags {
     _ERR = 020, /* error occurred on this file */ /* binary 10000*/
 };
 
-int _fillbuf(FILE *);
-int _flushbuf(int, FILE *);
+int _fillbuf(myFile *);
+int _flushbuf(int, myFile *);
 
-int main(int argc, char *argv[]) {
+int main() {
 
 	int c;
 	while ((c = getchar()) != EOF) {
@@ -48,13 +48,13 @@ int main(int argc, char *argv[]) {
 	}
 }
 
-FILE _iob[OPEN_MAX] = { /* stdin, stdout, stderr */
+myFile _iob[OPEN_MAX] = { /* stdin, stdout, stderr */
 	{ 0, (char *) 0, (char *) 0, _READ, 0 },
 	{ 0, (char *) 0, (char *) 0, _WRITE, 1 },
 };
 
 
-int _flushbuf(int c, FILE *fp) {
+int _flushbuf(int c, myFile *fp) {
 
 	int num, bufs;
 	unsigned char uc = c;
@@ -100,7 +100,7 @@ int _flushbuf(int c, FILE *fp) {
 }
 
 
-int _fillbuf(FILE *fp) {
+int _fillbuf(myFile *fp) {
 
 	int bufs;
 
