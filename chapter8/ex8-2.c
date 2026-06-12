@@ -70,5 +70,5 @@ int _fillbuf(FILE *fp) {
 		return EOF
 	}
 
-	return *fp->ptr++;
+	return (unsigned char) *fp->ptr++;
 }
