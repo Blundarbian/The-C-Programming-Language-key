@@ -35,6 +35,12 @@ enum _flags {
 int _fillbuf(FILE *);
 int _flushbuf(int, FILE *);
 
+FILE _iob[OPEN_MAX] = { /* stdin, stdout, stderr */
+	{ 0, (char *) 0, (char *) 0, _READ, 0 },
+	{ 0, (char *) 0, (char *) 0, _WRITE, 1 },
+	{ 0, (char *) 0, (char *) 0, _WRITE, | _UNBUF, 2 }
+};
+
 
 int _fillbuf(FILE *fp) {
 
