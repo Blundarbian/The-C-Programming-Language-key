@@ -3,12 +3,17 @@
  */
 
 #include <stdio.h>
-#include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
+
+#ifdef NULL
+#undef NULL
+#undef stdin
+#undef stdout
+#endif
 
 #define NULL 0
 #define EOF (-1)
-#define BUFSIZ 1024
 #define OPEN_MAX 20	// max files one program can open at once
 
 typedef struct _iobuf {
@@ -18,11 +23,11 @@ typedef struct _iobuf {
 	int flag; /* mode of file access */
 	int fd; /* file descriptor */
 } FILE;
+
 extern FILE _iob[OPEN_MAX];
 
 #define stdin (&_iob[0])
 #define stdout (&_iob[1])
-#define stderr (&_iob[2])
 
 enum _flags {
     _READ = 01, /* file open for reading */ /* binary 1 */
@@ -35,11 +40,64 @@ enum _flags {
 int _fillbuf(FILE *);
 int _flushbuf(int, FILE *);
 
+int main(int argc, char *argv[]) {
+
+	int c;
+	while ((c = getchar()) != EOF) {
+		putchar(c);
+	}
+}
+
 FILE _iob[OPEN_MAX] = { /* stdin, stdout, stderr */
 	{ 0, (char *) 0, (char *) 0, _READ, 0 },
 	{ 0, (char *) 0, (char *) 0, _WRITE, 1 },
-	{ 0, (char *) 0, (char *) 0, _WRITE, | _UNBUF, 2 }
 };
+
+
+int _flushbuf(int c, FILE *fp) {
+
+	int num, bufs;
+	unsigned char uc = c;
+
+	if ((fp->flag & (_WRITE | _EOF | _ERR)) != _WRITE)
+		return EOF;
+
+	// no buffer
+	if (fp->base == NULL && ((fp->flag & _UNBUF) == 0)) {
+		fp->base = malloc(BUFSIZ);
+		if (fp->base == NULL)
+			fp->flag |= _UNBUF;
+		else {
+			fp->ptr = fp->base;
+			fp->cnt = BUFSIZ - 1;
+		}
+	}
+
+	if (fp->flag & _UNBUF) { 	// write 
+		fp->ptr = fp->base = NULL;
+		fp->cnt = 0;
+
+		if (c == EOF)
+			return EOF;
+
+		num = write(fp->fd, &uc, 1);
+		bufs = 1;
+	}
+
+	else {		
+		bufs = (int) (fp->ptr - fp->base);
+		num = write(fp->fd, fp->base, bufs);
+
+		fp->ptr = fp->base;
+		fp->cnt = BUFSIZ - 1;
+	}
+
+	if (num == bufs)
+		return c;
+
+	fp->flag |= _ERR;
+	return EOF;
+}
 
 
 int _fillbuf(FILE *fp) {
@@ -52,9 +110,11 @@ int _fillbuf(FILE *fp) {
 	if (fp->flag & _UNBUF) bufs = 1;
 	else BUFSIZ;
 
-	if (fp->base == NULL) 		// no buffer found
-		if ((fp->base = (char *) malloc(bufs)) == NULL)
+	if (fp->base == NULL) { 		// no buffer found
+		fp->base = (char *) malloc(bufs);
+		if (fp->base == NULL) 
 			return EOF;	// no buffer
+	}
 
 	fp->ptr = fp->base;
 
@@ -67,7 +127,7 @@ int _fillbuf(FILE *fp) {
 		else fp->flag |= _ERR;
 
 		fp->cnt = 0;
-		return EOF
+		return EOF;
 	}
 
 	return (unsigned char) *fp->ptr++;
