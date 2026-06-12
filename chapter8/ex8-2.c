@@ -34,3 +34,23 @@ enum _flags {
 
 int _fillbuf(FILE *);
 int _flushbuf(int, FILE *);
+
+
+int _fillbuf(FILE *fp) {
+
+	int bufs;
+
+	if ((fp->flag & (_READ | _EOF | _ERR)) != _READ)
+		return EOF;
+
+	if (fp->flag & _UNBUF) bufs = 1;
+	else BUFSIZ;
+
+	if (fp->base == NULL) 		// no buffer found
+		if ((fp->base = (char *) malloc(bufs)) == NULL)
+			return EOF;	// no buffer
+
+	fp->ptr = fp->base;
+
+	fp->cnt = read(fp->fp, fp->ptr, bufs);
+}
