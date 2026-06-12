@@ -52,5 +52,17 @@ int _fillbuf(FILE *fp) {
 
 	fp->ptr = fp->base;
 
-	fp->cnt = read(fp->fp, fp->ptr, bufs);
+	fp->cnt = read(fp->fd, fp->ptr, bufs);
+
+	
+	if (--fp->cnt < 0) {
+		
+		if (fp->cnt == -1) fp->flag |= _EOF;
+		else fp->flag |= _ERR;
+
+		fp->cnt = 0;
+		return EOF
+	}
+
+	return *fp->ptr++;
 }
