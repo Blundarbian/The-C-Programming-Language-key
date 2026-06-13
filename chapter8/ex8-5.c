@@ -29,9 +29,26 @@ int main(int argc, char *argv[]) {
 }
 
 void fsize(char *name) {
+	
+	struct stat stbuf;
+	
+	if (stat(name, &stbuf) == -1) {
+		fprintf(stderr, "size: no acess %s\n", name);
+		return;
+	}
 
+	if ((strbuf.st_mode & S_IFMT) == S_IFDIR)
+		dirwalk(name, fsize);
+	printf("%d %d\t %12ld\t : %s\n", stbuf.st_uid, stbuf.st_gid, stbuf.st_size, name);
 }
 
+
 void dirwalk(char *dir, void (*fct)(char *)) {
+
+	char name[FILENAME_MAX];
+	struct dirent *dp;
+	DIR *dfd;
+
+	if ((dfd
 
 }
