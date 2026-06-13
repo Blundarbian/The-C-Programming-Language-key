@@ -24,31 +24,46 @@ int main(int argc, char *argv[]) {
 	else
 		while (--argc > 0)
 			fsize(*++argv);
-	
+
 	return 0;
 }
 
 void fsize(char *name) {
-	
+
 	struct stat stbuf;
-	
+
 	if (stat(name, &stbuf) == -1) {
 		fprintf(stderr, "size: no acess %s\n", name);
 		return;
 	}
 
-	if ((strbuf.st_mode & S_IFMT) == S_IFDIR)
+	if ((stbuf.st_mode & S_IFMT) == S_IFDIR)
 		dirwalk(name, fsize);
 	printf("%d %d\t %12ld\t : %s\n", stbuf.st_uid, stbuf.st_gid, stbuf.st_size, name);
 }
 
-
-void dirwalk(char *dir, void (*fct)(char *)) {
-
-	char name[FILENAME_MAX];
+/* dirwalk: apply fcn to all files in dir */
+void dirwalk(char *dir, void (*fcn)(char *))
+{
+	char name[MAX_PATH];
 	struct dirent *dp;
 	DIR *dfd;
 
-	if ((dfd
-
+	if ((dfd = opendir(dir)) == NULL) {
+		fprintf(stderr, "dirwalk: can't open %s\n", dir);
+		return;
+	}
+	while ((dp = readdir(dfd)) != NULL) {
+		if (strcmp(dp->name, ".") == 0
+				|| strcmp(dp->name, ".."))
+			continue; /* skip self and parent */
+		if (strlen(dir)+strlen(dp->name)+2 > sizeof(name))
+			fprintf(stderr, "dirwalk: name %s %s too long\n",
+					dir, dp->name);
+		else {
+			sprintf(name, "%s/%s", dir, dp->name);
+			(*fcn)(name);
+		}
+	}
+	closedir(dfd);
 }
