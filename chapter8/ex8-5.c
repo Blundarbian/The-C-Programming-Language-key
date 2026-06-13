@@ -39,7 +39,8 @@ void fsize(char *name) {
 
 	if ((stbuf.st_mode & S_IFMT) == S_IFDIR)
 		dirwalk(name, fsize);
-	printf("%d %d\t %12ld\t : %s\n", stbuf.st_uid, stbuf.st_gid, stbuf.st_size, name);
+
+	printf("%d %d %12ld : %s\n", (int)stbuf.st_uid, (int)stbuf.st_gid, (long)stbuf.st_size, name);
 }
 
 /* dirwalk: apply fcn to all files in dir */
@@ -54,14 +55,13 @@ void dirwalk(char *dir, void (*fcn)(char *))
 		return;
 	}
 	while ((dp = readdir(dfd)) != NULL) {
-		if (strcmp(dp->name, ".") == 0
-				|| strcmp(dp->name, ".."))
+		if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
 			continue; /* skip self and parent */
-		if (strlen(dir)+strlen(dp->name)+2 > sizeof(name))
+		if (strlen(dir)+strlen(dp->d_name)+2 > sizeof(name))
 			fprintf(stderr, "dirwalk: name %s %s too long\n",
-					dir, dp->name);
+					dir, dp->d_name);
 		else {
-			sprintf(name, "%s/%s", dir, dp->name);
+			sprintf(name, "%s/%s", dir, dp->d_name);
 			(*fcn)(name);
 		}
 	}
