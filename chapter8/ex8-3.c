@@ -80,8 +80,8 @@ int ffclose(myFile *fp) {
 	fd = fp->fd;
 	mflush(fp);
 
-	f->cnt = 0;
-	f->ptr = NULL;
+	fp->cnt = 0;
+	fp->ptr = NULL;
 
 	if (fp->base != NULL)
 		free(fp->base);
@@ -90,7 +90,7 @@ int ffclose(myFile *fp) {
 	fp->flag = 0;
 	fp->fd = -1;
 
-	return close(fp);
+	return close(fd);
 }
 
 
