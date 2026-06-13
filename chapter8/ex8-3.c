@@ -44,10 +44,45 @@ int ffclose(myFile *);
 myFile *ffopen(char *, char *);
 
 
+#define PERMS 0666
 myFile *ffopen(char *name, char *mode) {
+	int fd;
+	myFile *fp;
+	char c = mode[0];
+
+	if (c != 'r' && c != 'w' && c != 'a')
+		return NULL;
+
+	for (fp = _iob; fp < _iob + OPEN_MAX; fp++)
+		if ((fp->flag & (_READ | _WRITE)) == 0)
+			break;				// free slot
 	
-	return NULL;
+	if (fp >= _iob + OPEN_MAX)			// no free 
+		return NULL;
+
+
+	if (c == 'w')
+		fd = creat(name, PERMS);
+	else if (c == 'a') {
+		if ((fd = open(name, O_WRONLY, 0)) == -1)
+			fd = creat(name PERMS);
+		lseek(fd, 0L, 2);
+	} else
+		fd = open(name, O_RDONLY, 0);
+	
+	if (fd == -1) return NULL;			// unable to access
+	
+
+	fp->flag = _WRITE;
+	if (c == 'r') fp->flag = _READ;
+
+	fp->fd = fd;
+	fp->cnt = 0;
+	fp->base = NULL;
+
+	return fp;
 }
+
 
 
 int mflush(myFile *file) {
@@ -101,6 +136,7 @@ int main() {
 		putchar(c);
 	}
 }
+
 
 myFile _iob[OPEN_MAX] = { /* stdin, stdout, stderr */
 	{ 0, (char *) 0, (char *) 0, _READ, 0 },
