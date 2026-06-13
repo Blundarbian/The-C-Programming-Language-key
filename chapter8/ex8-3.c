@@ -39,25 +39,41 @@ enum _flags {
 
 int _fillbuf(myFile *);
 int _flushbuf(int, myFile *);
-int ffflush(myFILE *);
-int ffclose(myFILE *);
-myFILE *ffopen(char *, char *);
+int mflush(myFile *);
+int ffclose(myFile *);
+myFile *ffopen(char *, char *);
 
 
-myFILE *ffopen(char *name, char *mode) {
+myFile *ffopen(char *name, char *mode) {
 	
+	return NULL;
 }
 
 
-int ffflush(myFILE *fp) {
+int mflush(myFile *file) {
+	int ret = 0;
+	myFile *fp;
 
-
+	if (file == NULL) {
+		for (fp = _iob; fp < _iob + OPEN_MAX; fp++)
+			if ((fp->flag & _WRITE) == 0 && mflush(fp) == -1)
+				ret = -1;
+	} else {
+		if ((file->flag & _WRITE) == 0)
+			return -1;
+		_flushbuf(EOF, file);
+		
+		if (file->flag & _ERR)
+			ret = -1;
+	}
+	return ret;
 }
 
 
-int ffclose(myFILE *fp) {
+int ffclose(myFile *fp) {
 
 
+	return 0;
 }
 
 
