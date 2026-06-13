@@ -3,7 +3,6 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #ifdef NULL
@@ -13,6 +12,7 @@
 #endif
 
 #define NULL 0
+#define BUFSIZ 1024
 #define EOF (-1)
 #define OPEN_MAX 20	// max files one program can open at once
 
@@ -44,6 +44,12 @@ int ffclose(myFile *);
 myFile *ffopen(char *, char *);
 
 
+#define getc(p) (--(p)->cnt >= 0 ? (unsigned char)*(p)->ptr++ : _fillbuf(p))
+#define putc(x, p) (--(p)->cnt >= 0 ? *(p)->ptr++ = (x) : _flushbuf((x), p))
+
+#define getchar() getc(stdin)
+#define putchar(x) putc((x), stdout)
+
 #define PERMS 0666
 myFile *ffopen(char *name, char *mode) {
 	int fd;
@@ -65,7 +71,7 @@ myFile *ffopen(char *name, char *mode) {
 		fd = creat(name, PERMS);
 	else if (c == 'a') {
 		if ((fd = open(name, O_WRONLY, 0)) == -1)
-			fd = creat(name PERMS);
+			fd = creat(name, PERMS);
 		lseek(fd, 0L, 2);
 	} else
 		fd = open(name, O_RDONLY, 0);
@@ -198,7 +204,7 @@ int _fillbuf(myFile *fp) {
 		return EOF;
 
 	if (fp->flag & _UNBUF) bufs = 1;
-	else BUFSIZ;
+	else bufs = BUFSIZ;
 
 	if (fp->base == NULL) { 		// no buffer found
 		fp->base = (char *) malloc(bufs);
