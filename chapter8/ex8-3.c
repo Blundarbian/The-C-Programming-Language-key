@@ -72,8 +72,25 @@ int mflush(myFile *file) {
 
 int ffclose(myFile *fp) {
 
+	int fd;
+	
+	if (fp == NULL)
+		return -1;
 
-	return 0;
+	fd = fp->fd;
+	mflush(fp);
+
+	f->cnt = 0;
+	f->ptr = NULL;
+
+	if (fp->base != NULL)
+		free(fp->base);
+
+	fp->base = NULL;
+	fp->flag = 0;
+	fp->fd = -1;
+
+	return close(fp);
 }
 
 
