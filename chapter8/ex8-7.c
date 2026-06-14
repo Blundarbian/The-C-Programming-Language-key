@@ -1,52 +1,61 @@
-/* Exercise 8-7. malloc accepts a size request without checking 
- * its plausibility; free believes that the block it is asked to 
- * free contains a valid size field. Improve these routines so 
- * they make more pains with error checking.
- */
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-typedef long Align; /* for alignment to long boundary */
+#define NALLOC 1024
 
-union header { /* block header */
+typedef long Align;
+union header {
 	struct {
-		union header *ptr; /* next block if on free list */
-		unsigned size; /* size of this block */
+		union header *ptr;
+		unsigned size;
 	} s;
-	Align x; /* force alignment of blocks */
+	Align x;
 };
-
 typedef union header Header;
 
-static Header base; /* empty list to get started */
-static Header *freep = NULL; /* start of free list */
+static Header base;
+static Header *freep = NULL;
 
+void *_malloc(unsigned nbytes);
+Header *morecore(unsigned nu);
+void _free(void *ap);
 
-int main() {
+int main(void) {
 
+	char *word;
+	if ((word = (char *) _malloc(sizeof(char) * 20)) == NULL) {
+		fprintf(stderr, "error: _malloc failed\n");
+		return -1;
+	}
+
+	strcpy(word, "duck malloc");
+	printf("%s\n", word);
+	_free(word);
 
 	return 0;
 }
 
-/* malloc: general-purpose storage allocator */
-void *malloc(unsigned nbytes) {
+void *_malloc(unsigned nbytes) {
 
 	Header *p, *prevp;
-	Header *moreroce(unsigned);
+	Header *morecore(unsigned);
 	unsigned nunits;
 
-	nunits = (nbytes+sizeof(Header)-1)/sizeof(header) + 1;
-	if ((prevp = freep) == NULL) { /* no free list yet */
-		base.s.ptr = freeptr = prevptr = &base;
+	if (nbytes == 0)
+		fprintf(stderr, "error: malloc size %u\n", nbytes);
+
+	nunits = (nbytes+sizeof(Header)-1)/sizeof(Header) + 1;
+	if ((prevp = freep) == NULL) {
+		base.s.ptr = freep = prevp = &base;
 		base.s.size = 0;
 	}
 	for (p = prevp->s.ptr; ; prevp = p, p = p->s.ptr) {
-		if (p->s.size >= nunits) { /* big enough */
-			if (p->s.size == nunits) /* exactly */
+		if (p->s.size >= nunits) {
+			if (p->s.size == nunits)
 				prevp->s.ptr = p->s.ptr;
-			else { /* allocate tail end */
+			else {
 				p->s.size -= nunits;
 				p += p->s.size;
 				p->s.size = nunits;
@@ -54,52 +63,53 @@ void *malloc(unsigned nbytes) {
 			freep = prevp;
 			return (void *)(p+1);
 		}
-		if (p == freep) /* wrapped around free list */
+		if (p == freep)
 			if ((p = morecore(nunits)) == NULL)
-				return NULL; /* none left */
+				return NULL;
 	}
 }
 
 
-#define NALLOC 1024 /* minimum #units to request */
-
-/* morecore: ask system for more memory */
-static Header *morecore(unsigned nu) {
-
-	char *cp, *sbrk(int);
-	Header *up;
-
-	if (nu < NALLOC)
-		nu = NALLOC;
-	cp = sbrk(nu * sizeof(Header));
-	if (cp == (char *) -1) /* no space at all */
-		return NULL;
-	up = (Header *) cp;
-	up->s.size = nu;
-	free((void *)(up+1));
-	return freep;
-}
-
-
-/* free: put block ap in free list */
-void free(void *ap) {
+void _free(void *ap) {
 
 	Header *bp, *p;
 
-	bp = (Header *)ap - 1; /* point to block header */
+	bp = (Header *)ap - 1;
+	if (bp->s.size == 0) {
+		fprintf(stderr, "free: bloc ksize %u\n", bp->s.size);
+		return;
+	}
+
 	for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
 		if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-			break; /* freed block at start or end of arena */
+			break;
 
-	if (bp + bp->size == p->s.ptr) { /* join to upper nbr */
+	if (bp + bp->s.size == p->s.ptr) {
 		bp->s.size += p->s.ptr->s.size;
 		bp->s.ptr = p->s.ptr->s.ptr;
 	} else
 		bp->s.ptr = p->s.ptr;
-	if (p + p->size == bp) { /* join to lower nbr */
+	if (p + p->s.size == bp) {
 		p->s.size += bp->s.size;
 		p->s.ptr = bp->s.ptr;
 	} else
 		p->s.ptr = bp;
 	freep = p;
+}
+
+
+Header *morecore(unsigned nu) {
+
+	char *cp;
+	Header *up;
+
+	if (nu < NALLOC)
+		nu = NALLOC;
+	cp = sbrk(nu * sizeof(Header));
+	if (cp == (char *) -1)
+		return NULL;
+	up = (Header *) cp;
+	up->s.size = nu;
+	_free((void *)(up+1));
+	return freep;
 }
