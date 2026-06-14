@@ -1,7 +1,7 @@
-/* Exercise 8-7. malloc accepts a size request without checking 
- * its plausibility; free believes that the block it is asked to 
- * free contains a valid size field. Improve these routines so 
- * they make more pains with error checking.
+/* Exercise 8-8. Write a routine bfree(p,n) that will free any 
+ * arbitrary block p of n characters into the free list maintained 
+ * by malloc and free. By using bfree, a user can add a static or 
+ * external array to the free list at any time.
  */
 #include <unistd.h>
 #include <stdlib.h>
@@ -26,6 +26,7 @@ static Header *freep = NULL;
 void *_malloc(unsigned nbytes);
 Header *morecore(unsigned nu);
 void _free(void *ap);
+void _bfree(void *p, unsigned n);
 
 int main(void) {
 
@@ -38,6 +39,10 @@ int main(void) {
 	strcpy(word, "duck malloc");
 	printf("%s\n", word);
 	_free(word);
+
+	char bfword[200] = "this will be freed";
+	printf("%s\n", bfword);
+	_bfree(bfword, 200);
 
 	return 0;
 }
@@ -100,6 +105,17 @@ void _free(void *ap) {
 	} else
 		p->s.ptr = bp;
 	freep = p;
+}
+
+
+void _bfree(void *p, unsigned n) {
+
+	if (n < sizeof(Header)) return;
+
+	Header *h = (Header *)p;
+	h->s.size = (n / sizeof(Header)) - 1;
+
+	_free((void *)(h + 1));
 }
 
 
